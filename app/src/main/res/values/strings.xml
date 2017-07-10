@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">InventoryApp_udacity_project</string>
+    <string name="app_name">Inventory App</string>
+    <!-- empty list strings -->
+    <string name="empty_view_title_text">Inventory is empty</string>
+    <string name="empty_view_subtitle_text">Why dont you add some</string>
+
+
 </resources>
