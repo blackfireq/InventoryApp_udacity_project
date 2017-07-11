@@ -35,7 +35,7 @@ public class InventoryDbHelper extends SQLiteOpenHelper{
         onCreate(db);
     }
 
-    //create pets table command
+    //create item table command
     public static final String SQL_CREATE_ITEM_TABLE =
             "CREATE TABLE " + InventoryEntry.TABLE_NAME + " (" +
                     InventoryEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -43,7 +43,7 @@ public class InventoryDbHelper extends SQLiteOpenHelper{
                     InventoryEntry.COLUMN_ITEM_PRICE + " INTEGER NOT NULL DEFAULT 0, " +
                     InventoryEntry.COLUMN_ITEM_QUANTITY + " INTEGER NOT NULL DEFAULT 0)";
 
-    //Drop pets table
+    //Drop item table
     private static final String SQL_DELETE_ITEM_TABLE =
             "DROP TABLE IF EXISTS " + InventoryEntry.TABLE_NAME;
 }
