@@ -47,16 +47,24 @@ public class InventoryCursorAdapter extends CursorAdapter{
 
         //find the columns of the item name
         int quantityColumnIndex = cursor.getColumnIndex(InventoryEntry.COLUMN_ITEM_QUANTITY);
+        //get current row name
+        String currentName = cursor.getString(nameColumnIndex);
+
+        //get current row price
+        String currentPrice = cursor.getString(priceColumnIndex);
+
+        //get current row quantity
+        String currentQuantity = cursor.getString(quantityColumnIndex);
 
         //setters
 
         //set item name in view
-        nameView.setText(nameColumnIndex);
+        nameView.setText(currentName);
 
         //set item price in view
-        priceView.setText(priceColumnIndex);
+        priceView.setText(currentPrice);
 
         //set item quantity in view
-        quantityView.setText(quantityColumnIndex);
+        quantityView.setText(currentQuantity);
     }
 }

@@ -28,7 +28,7 @@
 
         <provider
             android:name=".data.InventoryProvider"
-            android:authorities="com.example.android.InventoryApp_udacity_project"
+            android:authorities="com.example.android.inventoryapp_udacity_project"
             android:exported="false" />
 
     </application>

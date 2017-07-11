@@ -196,7 +196,7 @@ public class InventoryProvider  extends ContentProvider{
         }
 
         // Check that the quanity is not null
-        int quantity = Integer.parseInt(values.getAsString(InventoryEntry.COLUMN_ITEM_NAME));
+        int quantity = Integer.parseInt(values.getAsString(InventoryEntry.COLUMN_ITEM_QUANTITY));
         if (TextUtils.isEmpty(Integer.toString(quantity))) {
             quantity = 0;
         }
