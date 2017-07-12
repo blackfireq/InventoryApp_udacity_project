@@ -17,8 +17,8 @@
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
     <!-- toast message strings -->
-    <string name="editor_insert_item_successful">Pet saved</string>
-    <string name="editor_insert_item_failed">Error with saving pet</string>
+    <string name="editor_insert_item_successful">Item saved</string>
+    <string name="editor_insert_item_failed">Error with saving Item</string>
 
 
 

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.app.LoaderManager;
@@ -20,13 +21,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.inventoryapp_udacity_project.data.InventoryContract.InventoryEntry;
 
+import java.util.List;
+
 import static android.R.attr.data;
 import static android.R.attr.name;
+import static android.R.attr.onClick;
+import static android.content.Intent.ACTION_SEND;
 
 public class ItemActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
@@ -38,6 +45,15 @@ public class ItemActivity extends AppCompatActivity implements LoaderManager.Loa
 
     /** EditText field to enter the item quantity */
     private EditText mQuantityEditText;
+
+    /** TextView field to decrease item quantity */
+    private TextView mQuantityEditTextMinus;
+
+    /** TextView field to increase item quantity */
+    private TextView mQuantityEditTextPlus;
+
+    /** Button to send email intent to order from supplier */
+    private Button mOrderFromSupplier;
 
 
     /** Content URI for the existing item (null if it's a new item) */
@@ -85,11 +101,69 @@ public class ItemActivity extends AppCompatActivity implements LoaderManager.Loa
         mNameEditText = (EditText)findViewById(R.id.edit_name_view);
         mPriceEditText = (EditText)findViewById(R.id.edit_price_view);
         mQuantityEditText = (EditText)findViewById(R.id.edit_quantity_view);
+        mQuantityEditTextMinus = (TextView)findViewById(R.id.edit_quantity_minus);
+        mQuantityEditTextPlus = (TextView)findViewById(R.id.edit_quantity_plus);
+        mOrderFromSupplier = (Button)findViewById(R.id.buy_more);
 
         //set the tochlisteners to the fields
         mNameEditText.setOnTouchListener(mTouchListener);
         mPriceEditText.setOnTouchListener(mTouchListener);
         mQuantityEditText.setOnTouchListener(mTouchListener);
+        mQuantityEditTextMinus.setOnTouchListener(mTouchListener);
+        mQuantityEditTextPlus.setOnTouchListener(mTouchListener);
+
+        //set onclick action to decrrease quantity
+        mQuantityEditTextMinus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //get current quantity
+                int quantity = Integer.parseInt(mQuantityEditText.getText().toString().trim());
+                //update quantity
+                if(quantity > 0) {
+                    quantity--;
+                }
+                //set quantity view
+                mQuantityEditText.setText(Integer.toString(quantity));
+            }
+        });
+
+        mQuantityEditTextPlus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //get current quantity
+                int quantity = Integer.parseInt(mQuantityEditText.getText().toString().trim());
+                //update quantity
+                quantity++;
+                //set quantity view
+                mQuantityEditText.setText(Integer.toString(quantity));
+            }
+        });
+
+        mOrderFromSupplier.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                emailIntent.setData(Uri.parse("mailto:"));
+                emailIntent.setType("text/plain");
+                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{ "jdoe@example.com"});
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "New order");
+                emailIntent.putExtra(Intent.EXTRA_TEXT, "body text please update");
+
+                //check for an app that can process the intent
+                PackageManager packageManager = getPackageManager();
+                List activities = packageManager.queryIntentActivities(emailIntent,
+                        PackageManager.MATCH_DEFAULT_ONLY);
+                boolean isIntentSafe = activities.size() > 0;
+
+                if(isIntentSafe) {
+                    startActivity(emailIntent);
+                } else {
+                    Toast.makeText(ItemActivity.this, "There is no email client installed.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
 
         getLoaderManager().initLoader(EXISTING_ITEM_LOADER, null, this);
     }
@@ -282,10 +356,6 @@ public class ItemActivity extends AppCompatActivity implements LoaderManager.Loa
             //run delete and get result back
             int rowsDeleted = getContentResolver().delete(mCurrentItemUri, null, null);
 
-            //create context for the toast to know what activity to display on
-            Context context = getApplicationContext();
-
-
             if (rowsDeleted > 0) {
                 // If the new content URI is null, then there was an error with insertion.
                 Toast.makeText(this, rowsDeleted + " Rows Deleted",
@@ -342,6 +412,9 @@ public class ItemActivity extends AppCompatActivity implements LoaderManager.Loa
             mNameEditText.setText(currentName);
             mPriceEditText.setText(Integer.toString(currentPrice));
             mQuantityEditText.setText(Integer.toString(currentQuantity));
+
+            //show button for existing items
+            mOrderFromSupplier.setVisibility(View.VISIBLE);
         }
     }
 
