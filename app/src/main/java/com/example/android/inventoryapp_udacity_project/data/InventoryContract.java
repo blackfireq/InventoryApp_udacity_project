@@ -36,5 +36,6 @@ public class InventoryContract {
         public static final String COLUMN_ITEM_NAME = "name";
         public static final String COLUMN_ITEM_QUANTITY = "quantity";
         public static final String COLUMN_ITEM_PRICE = "price";
+        public static final String COLUMN_ITEM_IMAGE = "image";
     }
 }

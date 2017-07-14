@@ -13,15 +13,15 @@
 
         <TextView
             android:id="@+id/text_name_view"
-            android:text="Name"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="Name" />
 
         <EditText
             android:id="@+id/edit_name_view"
-            android:hint="name"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:hint="name" />
 
     </LinearLayout>
 
@@ -32,15 +32,15 @@
 
         <TextView
             android:id="@+id/text_price_view"
-            android:text="Price"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="Price" />
 
         <EditText
             android:id="@+id/edit_price_view"
-            android:hint="price"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:hint="price" />
     </LinearLayout>
 
     <LinearLayout
@@ -50,38 +50,43 @@
 
         <TextView
             android:id="@+id/text_quantity_view"
-            android:text="Quantity"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="Quantity" />
 
         <TextView
             android:id="@+id/edit_quantity_minus"
-            android:text="-"
-            android:padding="5dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="-" />
 
         <EditText
             android:id="@+id/edit_quantity_view"
-            android:hint="0"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:hint="0" />
 
         <TextView
             android:id="@+id/edit_quantity_plus"
-            android:text="+"
-            android:padding="5dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="+" />
     </LinearLayout>
+    <ImageView
+        android:id="@+id/item_image_view"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:background="@android:color/darker_gray"
+        android:padding="15dp"/>
 
     <Button
         android:id="@+id/buy_more"
-        android:text="Order More!"
-        android:visibility="invisible"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="Order More!"
+        android:visibility="invisible" />
 
 
 </LinearLayout>

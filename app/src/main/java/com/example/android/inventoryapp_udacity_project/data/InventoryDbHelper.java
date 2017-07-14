@@ -18,7 +18,17 @@ public class InventoryDbHelper extends SQLiteOpenHelper{
 
     /**  Databse version. If you change the database schema, you must increment the database version */
     public static final int DATABASE_VERSION = 1;
-
+    //create item table command
+    public static final String SQL_CREATE_ITEM_TABLE =
+            "CREATE TABLE " + InventoryEntry.TABLE_NAME + " (" +
+                    InventoryEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    InventoryEntry.COLUMN_ITEM_NAME + " TEXT NOT NULL, " +
+                    InventoryEntry.COLUMN_ITEM_PRICE + " INTEGER NOT NULL DEFAULT 0, " +
+                    InventoryEntry.COLUMN_ITEM_QUANTITY + " INTEGER NOT NULL DEFAULT 0" +
+                    InventoryEntry.COLUMN_ITEM_IMAGE + "TEXT )";
+    //Drop item table
+    private static final String SQL_DELETE_ITEM_TABLE =
+            "DROP TABLE IF EXISTS " + InventoryEntry.TABLE_NAME;
 
     public InventoryDbHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -34,16 +44,4 @@ public class InventoryDbHelper extends SQLiteOpenHelper{
         db.execSQL(SQL_DELETE_ITEM_TABLE);
         onCreate(db);
     }
-
-    //create item table command
-    public static final String SQL_CREATE_ITEM_TABLE =
-            "CREATE TABLE " + InventoryEntry.TABLE_NAME + " (" +
-                    InventoryEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    InventoryEntry.COLUMN_ITEM_NAME + " TEXT NOT NULL, " +
-                    InventoryEntry.COLUMN_ITEM_PRICE + " INTEGER NOT NULL DEFAULT 0, " +
-                    InventoryEntry.COLUMN_ITEM_QUANTITY + " INTEGER NOT NULL DEFAULT 0)";
-
-    //Drop item table
-    private static final String SQL_DELETE_ITEM_TABLE =
-            "DROP TABLE IF EXISTS " + InventoryEntry.TABLE_NAME;
 }
