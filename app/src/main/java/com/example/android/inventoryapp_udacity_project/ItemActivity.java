@@ -86,9 +86,9 @@ public class ItemActivity extends AppCompatActivity implements LoaderManager.Loa
         setContentView(R.layout.activity_item);
 
         /* TextView field to decrease item quantity */
-        TextView mQuantityEditTextMinus;
+        Button mQuantityEditTextMinus;
         /* TextView field to increase item quantity */
-        TextView mQuantityEditTextPlus;
+        Button mQuantityEditTextPlus;
 
         //get intent info if any
         Intent intent = getIntent();
@@ -109,8 +109,8 @@ public class ItemActivity extends AppCompatActivity implements LoaderManager.Loa
         mNameEditText = (EditText)findViewById(R.id.edit_name_view);
         mPriceEditText = (EditText)findViewById(R.id.edit_price_view);
         mQuantityEditText = (EditText)findViewById(R.id.edit_quantity_view);
-        mQuantityEditTextMinus = (TextView)findViewById(R.id.edit_quantity_minus);
-        mQuantityEditTextPlus = (TextView)findViewById(R.id.edit_quantity_plus);
+        mQuantityEditTextMinus = (Button)findViewById(R.id.edit_quantity_minus);
+        mQuantityEditTextPlus = (Button)findViewById(R.id.edit_quantity_plus);
         mOrderFromSupplier = (Button)findViewById(R.id.buy_more);
         mItemImage = (ImageView)findViewById(R.id.item_image_view);
 
