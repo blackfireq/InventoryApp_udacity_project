@@ -10,10 +10,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.app.LoaderManager;
 import android.content.Loader;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.FileProvider;
@@ -34,49 +36,40 @@ import android.widget.Toast;
 import com.example.android.inventoryapp_udacity_project.data.InventoryContract.InventoryEntry;
 
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.IOException;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import static android.R.attr.data;
-import static android.R.attr.name;
-import static android.R.attr.onClick;
-import static android.content.Intent.ACTION_SEND;
 import static com.example.android.inventoryapp_udacity_project.data.InventoryProvider.LOG_TAG;
 
 public class ItemActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
-    /** identifier for the camera capture */
+    /* identifier for the camera capture */
     private static final int REQUEST_TAKE_PHOTO = 1;
-    /** Indentifier for cursorloader */
-    private static final int EXISTING_ITEM_LOADER = 1;
+    /* Indentifier for cursorloader */
+    private static final int EXISTING_ITEM_LOADER = 2;
     String mImageTest;
-    /** EditText field to enter the item name */
+    /* EditText field to enter the item name */
     private EditText mNameEditText;
-    /** EditText field to enter the item price */
+    /* EditText field to enter the item price */
     private EditText mPriceEditText;
-    /** EditText field to enter the item quantity */
+    /* EditText field to enter the item quantity */
     private EditText mQuantityEditText;
-    /** TextView field to decrease item quantity */
-    private TextView mQuantityEditTextMinus;
-    /** TextView field to increase item quantity */
-    private TextView mQuantityEditTextPlus;
-    /** ImageView field to display Item image*/
+    /* ImageView field to display Item image*/
     private ImageView mItemImage;
-    /** Button to send email intent to order from supplier */
+    /* Button to send email intent to order from supplier */
     private Button mOrderFromSupplier;
-    /** Used for image path*/
+    /* Used for image path*/
     private String mCurrentPhotoPath;
-    /** Content URI for the existing item (null if it's a new item) */
+    /* Content URI for the existing item (null if it's a new item) */
     private Uri mCurrentItemUri;
-    //flag is changed if the user clicks on a field
+    /* flag is changed if the user clicks on a field */
     private boolean mItemHasChanged = false;
-
-    private String mItemName;
-    private int mItemPrice;
-    private int mItemQuantity;
+    /* used for the image uri */
+    private Uri mPhotoUri;
 
     // touch listner to let us know when they have clicked on a field
     private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
@@ -91,6 +84,11 @@ public class ItemActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item);
+
+        /* TextView field to decrease item quantity */
+        TextView mQuantityEditTextMinus;
+        /* TextView field to increase item quantity */
+        TextView mQuantityEditTextPlus;
 
         //get intent info if any
         Intent intent = getIntent();
@@ -142,8 +140,15 @@ public class ItemActivity extends AppCompatActivity implements LoaderManager.Loa
         mQuantityEditTextPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                int quantity;
                 //get current quantity
-                int quantity = Integer.parseInt(mQuantityEditText.getText().toString().trim());
+
+                //check if the quantity is empty
+                if(TextUtils.isEmpty(mQuantityEditText.getText().toString())){
+                    quantity =0;
+                } else{
+                    quantity = Integer.parseInt(mQuantityEditText.getText().toString().trim());
+                }
                 //update quantity
                 quantity++;
                 //set quantity view
@@ -328,6 +333,9 @@ public class ItemActivity extends AppCompatActivity implements LoaderManager.Loa
 
     // add item, display toast if sucessfull or not
     private void addItem(){
+        String mItemName;
+        float mItemPrice;
+        int mItemQuantity;
 
         //check if any fields are empty and end the activity
         if(TextUtils.isEmpty( mNameEditText.getText().toString()) &&
@@ -337,9 +345,9 @@ public class ItemActivity extends AppCompatActivity implements LoaderManager.Loa
         } else {
             //get values from fields
             mItemName = mNameEditText.getText().toString().trim();
-            mItemPrice = Integer.parseInt(mPriceEditText.getText().toString().trim());
+            mItemPrice = Float.parseFloat(mPriceEditText.getText().toString().trim());
             mItemQuantity = Integer.parseInt(mQuantityEditText.getText().toString().trim());
-            mCurrentPhotoPath = mImageTest;
+            mCurrentPhotoPath = mPhotoUri.toString();
         }
 
         //create object to collect data
@@ -427,10 +435,35 @@ public class ItemActivity extends AppCompatActivity implements LoaderManager.Loa
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
+                mPhotoUri = FileProvider.getUriForFile(this,
                         "com.example.android.inventoryapp_udacity_project.fileprovider",
                         photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoUri);
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+            }
+        }
+    }
+
+    private Bitmap getBitmapFromUri (Uri uri){
+        ParcelFileDescriptor parcelFileDescriptor = null;
+        try {
+            parcelFileDescriptor =
+                    getContentResolver().openFileDescriptor(uri, "r");
+            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+            Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+            parcelFileDescriptor.close();
+            return image;
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Failed to load image.", e);
+            return null;
+        } finally {
+            try {
+                if (parcelFileDescriptor != null) {
+                    parcelFileDescriptor.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e(LOG_TAG, "Error closing ParcelFile Descriptor");
             }
         }
     }
@@ -438,9 +471,8 @@ public class ItemActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            mItemImage.setImageBitmap(imageBitmap);
+            Bitmap mBitmap = getBitmapFromUri(mPhotoUri);
+            mItemImage.setImageBitmap(mBitmap);
         }
     }
 
@@ -480,17 +512,17 @@ public class ItemActivity extends AppCompatActivity implements LoaderManager.Loa
 
             // Extract out the value from the Cursor for the given column index
             String currentName = cursor.getString(nameColumnIndex);
-            int currentPrice = cursor.getInt(priceColumnIndex);
+            float currentPrice = cursor.getFloat(priceColumnIndex);
             int currentQuantity = cursor.getInt(quantityColumnIndex);
             Uri currentImage = Uri.parse(cursor.getString(imageColumnIndex));
 
 
             // Update the views on the screen with the values from the database
             mNameEditText.setText(currentName);
-            mPriceEditText.setText(Integer.toString(currentPrice));
+            mPriceEditText.setText(Float.toString(currentPrice));
             mQuantityEditText.setText(Integer.toString(currentQuantity));
-            Log.v("batman",currentImage.toString());
-            mItemImage.setImageURI(currentImage);
+            Bitmap bm = getBitmapFromUri(currentImage);
+            mItemImage.setImageBitmap(bm);
 
             //show button for existing items
             mOrderFromSupplier.setVisibility(View.VISIBLE);

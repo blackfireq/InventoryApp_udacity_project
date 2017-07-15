@@ -23,7 +23,7 @@ public class InventoryDbHelper extends SQLiteOpenHelper{
             "CREATE TABLE " + InventoryEntry.TABLE_NAME + " (" +
                     InventoryEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     InventoryEntry.COLUMN_ITEM_NAME + " TEXT NOT NULL, " +
-                    InventoryEntry.COLUMN_ITEM_PRICE + " INTEGER NOT NULL DEFAULT 0, " +
+                    InventoryEntry.COLUMN_ITEM_PRICE + " FLOAT NOT NULL DEFAULT 0.0, " +
                     InventoryEntry.COLUMN_ITEM_QUANTITY + " INTEGER NOT NULL DEFAULT 0," +
                     InventoryEntry.COLUMN_ITEM_IMAGE + " TEXT )";
     //Drop item table

@@ -190,8 +190,8 @@ public class InventoryProvider  extends ContentProvider{
         }
 
         // Check that the price is not null
-        int price = Integer.parseInt(values.getAsString(InventoryEntry.COLUMN_ITEM_PRICE));
-        if (TextUtils.isEmpty(Integer.toString(price))) {
+        float price = Float.parseFloat(values.getAsString(InventoryEntry.COLUMN_ITEM_PRICE));
+        if (TextUtils.isEmpty(Float.toString(price))) {
             throw new IllegalArgumentException("Item requires a Price");
         }
 
@@ -229,8 +229,8 @@ public class InventoryProvider  extends ContentProvider{
         }
 
         // Check that the price is not null
-        int price = Integer.parseInt(values.getAsString(InventoryEntry.COLUMN_ITEM_PRICE));
-        if (TextUtils.isEmpty(Integer.toString(price))) {
+        float price = Float.parseFloat(values.getAsString(InventoryEntry.COLUMN_ITEM_PRICE));
+        if (TextUtils.isEmpty(Float.toString(price))) {
             throw new IllegalArgumentException("Item requires a Price");
         }
 
