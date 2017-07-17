@@ -347,7 +347,7 @@ public class ItemActivity extends AppCompatActivity implements LoaderManager.Loa
             mItemName = mNameEditText.getText().toString().trim();
             mItemPrice = Float.parseFloat(mPriceEditText.getText().toString().trim());
             mItemQuantity = Integer.parseInt(mQuantityEditText.getText().toString().trim());
-            mCurrentPhotoPath = mPhotoUri.toString();
+
         }
 
         //create object to collect data
@@ -355,7 +355,10 @@ public class ItemActivity extends AppCompatActivity implements LoaderManager.Loa
         values.put(InventoryEntry.COLUMN_ITEM_NAME,mItemName);
         values.put(InventoryEntry.COLUMN_ITEM_PRICE,mItemPrice);
         values.put(InventoryEntry.COLUMN_ITEM_QUANTITY,mItemQuantity);
-        values.put(InventoryEntry.COLUMN_ITEM_IMAGE,mCurrentPhotoPath);
+       if(mCurrentPhotoPath != null){
+           mCurrentPhotoPath = mPhotoUri.toString();
+           values.put(InventoryEntry.COLUMN_ITEM_IMAGE,mCurrentPhotoPath);
+       }
 
         if(mCurrentItemUri == null){
             mCurrentItemUri = getContentResolver().insert(InventoryEntry.CONTENT_URI, values);
