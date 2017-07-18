@@ -1,20 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="horizontal">
+    <RelativeLayout
+        android:id="@+id/item_group"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight=".75">
+        <TextView
+            android:id="@+id/item_name_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textSize="32dp" />
 
-    <TextView
-        android:id="@+id/item_name_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <LinearLayout
+            android:id="@+id/item_price_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/item_name_view"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:text="Price: " />
+            <TextView
+                android:id="@+id/item_price_view"
+                android:layout_width="wrap_content"
 
+                android:layout_height="wrap_content"
+                android:padding="5dp" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/item_quantity_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/item_price_group"
+            android:layout_toRightOf="@+id/item_name_view"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:text="Quantity: " />
+            <TextView
+                android:id="@+id/item_quantity_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp" />
+        </LinearLayout>
+    </RelativeLayout>
     <TextView
-        android:id="@+id/item_price_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/item_quantity_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:id="@+id/item_sale_view"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight=".25"
+        android:padding="10dp"
+        android:text="SALE"
+        android:textAlignment="center" />
 </LinearLayout>

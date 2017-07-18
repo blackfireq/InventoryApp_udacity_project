@@ -222,24 +222,6 @@ public class InventoryProvider  extends ContentProvider{
         // Create connection to the database
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
-        // Check that the name is not null
-        String name = values.getAsString(InventoryEntry.COLUMN_ITEM_NAME);
-        if (TextUtils.isEmpty(name)) {
-            throw new IllegalArgumentException("Item requires a name");
-        }
-
-        // Check that the price is not null
-        float price = Float.parseFloat(values.getAsString(InventoryEntry.COLUMN_ITEM_PRICE));
-        if (TextUtils.isEmpty(Float.toString(price))) {
-            throw new IllegalArgumentException("Item requires a Price");
-        }
-
-        // Check that the quanity is not null
-        int quantity = Integer.parseInt(values.getAsString(InventoryEntry.COLUMN_ITEM_QUANTITY));
-        if (TextUtils.isEmpty(Integer.toString(quantity))) {
-            throw new IllegalArgumentException("Item requires a quantity");
-        }
-
         //run update and get number of rows
         int numOfRows = db.update(InventoryEntry.TABLE_NAME, values, selection, selectionArgs);
 
