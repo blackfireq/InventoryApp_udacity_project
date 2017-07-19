@@ -45,7 +45,7 @@ import java.util.List;
 
 import static com.example.android.inventoryapp_udacity_project.data.InventoryProvider.LOG_TAG;
 
-public class ItemActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+public class ItemActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     /* identifier for the camera capture */
     private static final int REQUEST_TAKE_PHOTO = 1;
@@ -71,6 +71,11 @@ public class ItemActivity extends AppCompatActivity implements LoaderManager.Loa
     /* used for the image uri */
     private Uri mPhotoUri;
 
+    String mItemName;
+    float mItemPrice;
+    int mItemQuantity;
+
+
     // touch listner to let us know when they have clicked on a field
     private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
         @Override
@@ -94,7 +99,7 @@ public class ItemActivity extends AppCompatActivity implements LoaderManager.Loa
         Intent intent = getIntent();
         mCurrentItemUri = intent.getData();
 
-        if (mCurrentItemUri == null){
+        if (mCurrentItemUri == null) {
             // This is a new Item, so change the app bar to say "Add an Item"
             setTitle(getString(R.string.editor_activity_title_new_item));
 
@@ -106,13 +111,13 @@ public class ItemActivity extends AppCompatActivity implements LoaderManager.Loa
         }
 
         // Find all relevant views that we will need to read user input from
-        mNameEditText = (EditText)findViewById(R.id.edit_name_view);
-        mPriceEditText = (EditText)findViewById(R.id.edit_price_view);
-        mQuantityEditText = (EditText)findViewById(R.id.edit_quantity_view);
-        mQuantityEditTextMinus = (Button)findViewById(R.id.edit_quantity_minus);
-        mQuantityEditTextPlus = (Button)findViewById(R.id.edit_quantity_plus);
-        mOrderFromSupplier = (Button)findViewById(R.id.buy_more);
-        mItemImage = (ImageView)findViewById(R.id.item_image_view);
+        mNameEditText = (EditText) findViewById(R.id.edit_name_view);
+        mPriceEditText = (EditText) findViewById(R.id.edit_price_view);
+        mQuantityEditText = (EditText) findViewById(R.id.edit_quantity_view);
+        mQuantityEditTextMinus = (Button) findViewById(R.id.edit_quantity_minus);
+        mQuantityEditTextPlus = (Button) findViewById(R.id.edit_quantity_plus);
+        mOrderFromSupplier = (Button) findViewById(R.id.buy_more);
+        mItemImage = (ImageView) findViewById(R.id.item_image_view);
 
         //set the tochlisteners to the fields
         mNameEditText.setOnTouchListener(mTouchListener);
@@ -129,7 +134,7 @@ public class ItemActivity extends AppCompatActivity implements LoaderManager.Loa
                 //get current quantity
                 int quantity = Integer.parseInt(mQuantityEditText.getText().toString().trim());
                 //update quantity
-                if(quantity > 0) {
+                if (quantity > 0) {
                     quantity--;
                 }
                 //set quantity view
@@ -144,9 +149,9 @@ public class ItemActivity extends AppCompatActivity implements LoaderManager.Loa
                 //get current quantity
 
                 //check if the quantity is empty
-                if(TextUtils.isEmpty(mQuantityEditText.getText().toString())){
-                    quantity =0;
-                } else{
+                if (TextUtils.isEmpty(mQuantityEditText.getText().toString())) {
+                    quantity = 0;
+                } else {
                     quantity = Integer.parseInt(mQuantityEditText.getText().toString().trim());
                 }
                 //update quantity
@@ -159,12 +164,13 @@ public class ItemActivity extends AppCompatActivity implements LoaderManager.Loa
         mOrderFromSupplier.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mItemName = mNameEditText.getText().toString().trim();
                 Intent emailIntent = new Intent(Intent.ACTION_SEND);
                 emailIntent.setData(Uri.parse("mailto:"));
                 emailIntent.setType("text/plain");
-                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{ "jdoe@example.com"});
+                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"jdoe@example.com"});
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "New order");
-                emailIntent.putExtra(Intent.EXTRA_TEXT, "body text please update");
+                emailIntent.putExtra(Intent.EXTRA_TEXT, "please create an order for " + mItemName);
 
                 //check for an app that can process the intent
                 PackageManager packageManager = getPackageManager();
@@ -172,7 +178,7 @@ public class ItemActivity extends AppCompatActivity implements LoaderManager.Loa
                         PackageManager.MATCH_DEFAULT_ONLY);
                 boolean isIntentSafe = activities.size() > 0;
 
-                if(isIntentSafe) {
+                if (isIntentSafe) {
                     startActivity(emailIntent);
                 } else {
                     Toast.makeText(ItemActivity.this, "There is no email client installed.", Toast.LENGTH_SHORT).show();
@@ -186,8 +192,6 @@ public class ItemActivity extends AppCompatActivity implements LoaderManager.Loa
                 dispatchTakePictureIntent();
             }
         });
-
-
 
 
         getLoaderManager().initLoader(EXISTING_ITEM_LOADER, null, this);
@@ -316,15 +320,7 @@ public class ItemActivity extends AppCompatActivity implements LoaderManager.Loa
                 deleteItem();
             }
         });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User clicked the "Cancel" button, so dismiss the dialog
-                // and continue editing the item.
-                if (dialog != null) {
-                    dialog.dismiss();
-                }
-            }
-        });
+        builder.setNegativeButton(R.string.cancel, null);
 
         // Create and show the AlertDialog
         AlertDialog alertDialog = builder.create();
@@ -332,35 +328,29 @@ public class ItemActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     // add item, display toast if sucessfull or not
-    private void addItem(){
-        String mItemName;
-        float mItemPrice;
-        int mItemQuantity;
+    private void addItem() {
 
         //check if any fields are empty and end the activity
-        if(TextUtils.isEmpty( mNameEditText.getText().toString()) &&
-                TextUtils.isEmpty(mPriceEditText.getText().toString()) &&
-                TextUtils.isEmpty(mQuantityEditText.getText().toString())){
+        if (TextUtils.isEmpty(mNameEditText.getText().toString()) ||
+                TextUtils.isEmpty(mPriceEditText.getText().toString()) ||
+                TextUtils.isEmpty(mQuantityEditText.getText().toString())) {
             return;
         } else {
             //get values from fields
             mItemName = mNameEditText.getText().toString().trim();
             mItemPrice = Float.parseFloat(mPriceEditText.getText().toString().trim());
             mItemQuantity = Integer.parseInt(mQuantityEditText.getText().toString().trim());
-
+            mCurrentPhotoPath = mPhotoUri.toString();
         }
 
         //create object to collect data
         ContentValues values = new ContentValues();
-        values.put(InventoryEntry.COLUMN_ITEM_NAME,mItemName);
-        values.put(InventoryEntry.COLUMN_ITEM_PRICE,mItemPrice);
-        values.put(InventoryEntry.COLUMN_ITEM_QUANTITY,mItemQuantity);
-       if(mCurrentPhotoPath != null){
-           mCurrentPhotoPath = mPhotoUri.toString();
-           values.put(InventoryEntry.COLUMN_ITEM_IMAGE,mCurrentPhotoPath);
-       }
+        values.put(InventoryEntry.COLUMN_ITEM_NAME, mItemName);
+        values.put(InventoryEntry.COLUMN_ITEM_PRICE, mItemPrice);
+        values.put(InventoryEntry.COLUMN_ITEM_QUANTITY, mItemQuantity);
+        values.put(InventoryEntry.COLUMN_ITEM_IMAGE, mCurrentPhotoPath);
 
-        if(mCurrentItemUri == null){
+        if (mCurrentItemUri == null) {
             mCurrentItemUri = getContentResolver().insert(InventoryEntry.CONTENT_URI, values);
         } else {
             String selection = InventoryEntry._ID;
@@ -386,8 +376,8 @@ public class ItemActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     // delete item, display toast if sucessfull or not
-    private void deleteItem(){
-        if(mCurrentItemUri != null){
+    private void deleteItem() {
+        if (mCurrentItemUri != null) {
             //run delete and get result back
             int rowsDeleted = getContentResolver().delete(mCurrentItemUri, null, null);
 
@@ -447,7 +437,7 @@ public class ItemActivity extends AppCompatActivity implements LoaderManager.Loa
         }
     }
 
-    private Bitmap getBitmapFromUri (Uri uri){
+    private Bitmap getBitmapFromUri(Uri uri) {
         ParcelFileDescriptor parcelFileDescriptor = null;
         try {
             parcelFileDescriptor =
@@ -489,7 +479,7 @@ public class ItemActivity extends AppCompatActivity implements LoaderManager.Loa
                 InventoryEntry.COLUMN_ITEM_IMAGE
         };
 
-        if (mCurrentItemUri != null){
+        if (mCurrentItemUri != null) {
             CursorLoader cursor = new CursorLoader(
                     this,                               // the Context
                     mCurrentItemUri,                    // The Content URI of the item table

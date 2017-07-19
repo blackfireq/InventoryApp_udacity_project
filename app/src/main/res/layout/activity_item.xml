@@ -40,6 +40,7 @@
             android:id="@+id/edit_price_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:inputType="number"
             android:hint="price" />
     </LinearLayout>
 
@@ -65,6 +66,7 @@
             android:id="@+id/edit_quantity_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:inputType="number"
             android:hint="0" />
 
         <Button
@@ -87,6 +89,4 @@
         android:layout_height="wrap_content"
         android:text="Order More!"
         android:visibility="invisible" />
-
-
 </LinearLayout>
