@@ -333,44 +333,46 @@ public class ItemActivity extends AppCompatActivity implements LoaderManager.Loa
         //check if any fields are empty and end the activity
         if (TextUtils.isEmpty(mNameEditText.getText().toString()) ||
                 TextUtils.isEmpty(mPriceEditText.getText().toString()) ||
-                TextUtils.isEmpty(mQuantityEditText.getText().toString())) {
-            return;
+                TextUtils.isEmpty(mQuantityEditText.getText().toString()) ||
+                mPhotoUri == null) {
+            Toast.makeText(ItemActivity.this, "Please fill out all fields", Toast.LENGTH_SHORT).show();
         } else {
             //get values from fields
             mItemName = mNameEditText.getText().toString().trim();
             mItemPrice = Float.parseFloat(mPriceEditText.getText().toString().trim());
             mItemQuantity = Integer.parseInt(mQuantityEditText.getText().toString().trim());
             mCurrentPhotoPath = mPhotoUri.toString();
-        }
 
-        //create object to collect data
-        ContentValues values = new ContentValues();
-        values.put(InventoryEntry.COLUMN_ITEM_NAME, mItemName);
-        values.put(InventoryEntry.COLUMN_ITEM_PRICE, mItemPrice);
-        values.put(InventoryEntry.COLUMN_ITEM_QUANTITY, mItemQuantity);
-        values.put(InventoryEntry.COLUMN_ITEM_IMAGE, mCurrentPhotoPath);
 
-        if (mCurrentItemUri == null) {
-            mCurrentItemUri = getContentResolver().insert(InventoryEntry.CONTENT_URI, values);
-        } else {
-            String selection = InventoryEntry._ID;
-            long currrentItemID = ContentUris.parseId(mCurrentItemUri);
-            String[] selectionArgs = {Long.toString(currrentItemID)};
-            long rowsUpdated = getContentResolver().update(mCurrentItemUri, values, selection, selectionArgs);
-        }
+            //create object to collect data
+            ContentValues values = new ContentValues();
+            values.put(InventoryEntry.COLUMN_ITEM_NAME, mItemName);
+            values.put(InventoryEntry.COLUMN_ITEM_PRICE, mItemPrice);
+            values.put(InventoryEntry.COLUMN_ITEM_QUANTITY, mItemQuantity);
+            values.put(InventoryEntry.COLUMN_ITEM_IMAGE, mCurrentPhotoPath);
 
-        //create context for the toast to know what activity to display on
-        Context context = getApplicationContext();
+            if (mCurrentItemUri == null) {
+                mCurrentItemUri = getContentResolver().insert(InventoryEntry.CONTENT_URI, values);
+            } else {
+                String selection = InventoryEntry._ID;
+                long currrentItemID = ContentUris.parseId(mCurrentItemUri);
+                String[] selectionArgs = {Long.toString(currrentItemID)};
+                long rowsUpdated = getContentResolver().update(mCurrentItemUri, values, selection, selectionArgs);
+            }
 
-        // Show a toast message depending on whether or not the insertion was successful
-        if (mCurrentItemUri == null) {
-            // If the new content URI is null, then there was an error with insertion.
-            Toast.makeText(this, getString(R.string.editor_insert_item_failed),
-                    Toast.LENGTH_SHORT).show();
-        } else {
-            // Otherwise, the insertion was successful and we can display a toast.
-            Toast.makeText(this, getString(R.string.editor_insert_item_successful),
-                    Toast.LENGTH_SHORT).show();
+            //create context for the toast to know what activity to display on
+            Context context = getApplicationContext();
+
+            // Show a toast message depending on whether or not the insertion was successful
+            if (mCurrentItemUri == null) {
+                // If the new content URI is null, then there was an error with insertion.
+                Toast.makeText(this, getString(R.string.editor_insert_item_failed),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                // Otherwise, the insertion was successful and we can display a toast.
+                Toast.makeText(this, getString(R.string.editor_insert_item_successful),
+                        Toast.LENGTH_SHORT).show();
+            }
         }
 
     }
